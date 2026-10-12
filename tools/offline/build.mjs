@@ -9,6 +9,7 @@ import { ROOT, REPO, SITE, read, gitCommit, buildStamp } from '../lib/book.mjs';
 const OUT = resolve(ROOT, process.argv[2] ?? 'dist/HowToLiveBetter.html');
 const STAMP = buildStamp();
 const COMMIT = gitCommit();
+const VINDASITE = 'https://vindamagic.cloud/life/';
 
 // ---------- 正文 ----------
 const readme = read('README.md');
@@ -45,16 +46,29 @@ must('href="book/"', ' book/ 链接');
 must('href="selfcheck.html"', ' 自查页链接');
 html = html
   .replaceAll('href="README.md"', `href="${REPO}/blob/main/README.md"`)
-  .replaceAll('href="selfcheck.html"', `href="${SITE}selfcheck.html"`)
+  .replaceAll('href="selfcheck.html"', `href="${VINDASITE}selfcheck.html"`)
   .replaceAll('href="book/"', `href="${REPO}/tree/main/book"`)
-  .replaceAll('<a class="title" href="./"', `<a class="title" href="${SITE}"`);
+  .replaceAll('class="title life-reader-title" href="./"', `class="title life-reader-title" href="${VINDASITE}"`)
+  .replaceAll('href="/"', 'href="https://vindamagic.cloud/"');
 
 // 侧栏广告图和赞赏码转 data URI，否则离线打开是个裂图
 for (const [img, mime] of [['ads/mcyyy-side.webp', 'image/webp'], ['ads/wechat-reward.png', 'image/png']]) {
-  must(`src="${img}"`, `图片 ${img}`);
+  if (!html.includes(`src="${img}"`)) continue;
   const data = readFileSync(resolve(ROOT, img)).toString('base64');
   html = html.replace(`src="${img}"`, `src="data:${mime};base64,${data}"`);
 }
+
+// 本站适配的字体、图标与外壳也内联，单文件仍能离线打开。
+let shellCss = read('vinda-life.css');
+const fontData = readFileSync(resolve(ROOT, 'vinda-manrope.ttf')).toString('base64');
+shellCss = shellCss.replace("url('vinda-manrope.ttf')", `url('data:font/ttf;base64,${fontData}')`);
+html = html.replace('<link rel="stylesheet" href="vinda-life.css">', `<style>${shellCss}</style>`);
+for (const script of ['vinda-icons.js', 'vinda-life.js']) {
+  const source = read(script).replace(/<\/script/gi, '<\\/script');
+  html = html.replace(`<script src="${script}"></script>`, `<script>${source}</script>`);
+}
+const brandData = readFileSync(resolve(ROOT, 'vinda-brand.svg')).toString('base64');
+html = html.replaceAll('src="vinda-brand.svg"', `src="data:image/svg+xml;base64,${brandData}"`);
 
 // 页脚注明这是哪一版的离线副本
 const foot = '<div class="foot">';

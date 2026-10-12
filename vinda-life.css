@@ -1,0 +1,140 @@
+@font-face {
+  font-family: Manrope;
+  src: url('vinda-manrope.ttf') format('truetype');
+  font-weight: 200 800;
+  font-display: swap;
+}
+:root {
+  --bg: #ffffff;
+  --bg-alt: #f6f8fc;
+  --bg-soft: #ffffff;
+  --bg-mute: #edf0f5;
+  --bg-elv: #ffffff;
+  --t1: #111218;
+  --t2: #596273;
+  --t3: #6b7280;
+  --divider: #e5e7eb;
+  --brand-1: #2b63ff;
+  --brand-2: #1949cd;
+  --brand-soft: #edf2ff;
+  --nav-h: 72px;
+  --side-w: 276px;
+  --font: Manrope, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --life-space: 24px;
+}
+html.dark {
+  --bg: #111314;
+  --bg-alt: #171a1f;
+  --bg-soft: #1b1f24;
+  --bg-mute: #262c34;
+  --bg-elv: #1b1f24;
+  --divider: #343a44;
+  --t1: #eef1f5;
+  --t2: #b1b9c7;
+  --t3: #a4aebd;
+  --brand-1: #8eafff;
+  --brand-2: #aec4ff;
+  --brand-soft: #222e45;
+}
+body { font-family: var(--font); letter-spacing: 0; }
+button, input { font-family: var(--font); letter-spacing: 0; }
+.nav-in { max-width: 1480px; margin: 0 auto; gap: 20px; padding: 0 28px; }
+.life-brand { display: inline-flex; align-items: center; gap: 12px; color: var(--t1); font-size: 17px; font-weight: 800; white-space: nowrap; }
+.life-brand:hover { text-decoration: none; color: var(--t1); }
+.life-brand img { width: 36px; height: 36px; flex: none; }
+.life-brand::after { content: ''; width: 1px; height: 24px; margin-left: 8px; background: var(--divider); }
+.title.life-reader-title { font-size: 14px; font-weight: 600; }
+.life-nav-action { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; color: var(--t2); }
+.life-nav-action:hover { color: var(--brand-1); text-decoration: none; }
+.life-nav-action svg, .life-theme svg { width: 18px; height: 18px; }
+.nav-r { gap: 16px; }
+.search { min-width: 120px; max-width: 390px; }
+.search input { height: 44px; border-color: var(--divider); background: var(--bg-alt); border-radius: 6px; }
+.search > i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); }
+.icon-btn { width: 44px; height: 44px; flex: none; }
+.life-theme { border: 1px solid var(--divider); border-radius: 6px; }
+.life-moon { display: none; }
+html.dark .life-sun { display: none; }
+html.dark .life-moon { display: block; }
+.sidebar { padding: 28px 24px 64px; border-right: 1px solid var(--divider); background: var(--bg-alt); }
+.hint { font-size: 12px; }
+.content { padding: calc(var(--nav-h) + 32px) 40px 64px calc(var(--side-w) + 40px); }
+.doc { max-width: 940px; }
+.doc-head h1 { font-size: 28px; line-height: 1.4; letter-spacing: 0; margin-bottom: 12px; }
+.doc-head > p:first-of-type { font-size: 16px; line-height: 1.7; color: var(--t2); }
+.life-reading-note { margin: 16px 0; font-size: 13px; color: var(--t2); }
+.life-reading-note summary { cursor: pointer; color: var(--t3); }
+.life-reading-note p { line-height: 1.8; margin-top: 12px; }
+.life-resources { margin: 16px 0; color: var(--t3); font-size: 13px; }
+.life-resources summary, .life-chapter-note summary { cursor: pointer; }
+.life-chapter-note { color: var(--t3); font-size: 13px; margin: 12px 0 24px; }
+.life-chapter-note[open] summary { margin-bottom: 16px; }
+.life-chapter-note p { font-size: 14px; }
+#dm-x svg, .xp-x svg { width: 18px; height: 18px; vertical-align: middle; }
+.doc-links { font-size: 13px; }
+.stat { margin: 20px 0 16px; }
+.sec-h h2 { font-size: 22px; letter-spacing: 0; }
+.card { border: 1px solid var(--divider); border-radius: 8px; padding: 24px; margin-bottom: 16px; }
+.card-h h3 { font-size: 18px; line-height: 1.6; letter-spacing: 0; }
+.human { font-size: 16px; line-height: 1.8; padding: 12px 16px; border-radius: 4px; }
+.rows .v { font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+.badges .badge { border-radius: 4px; }
+.life-credit { margin: 28px 0 0; padding-top: 20px; border-top: 1px solid var(--divider); color: var(--t3); font-size: 12px; line-height: 1.9; }
+.life-credit a { white-space: nowrap; }
+.life-version { display: block; }
+.life-sponsor { margin: 28px 0; padding: 20px 0; border-top: 1px solid var(--divider); border-bottom: 1px solid var(--divider); }
+.life-sponsor-label { display: block; font-size: 12px; color: var(--t3); margin-bottom: 8px; }
+.life-sponsor a { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.life-sponsor img { object-fit: contain; max-width: 100%; }
+.life-sponsor strong { font-size: 16px; }
+.life-sponsor a span { color: var(--t2); font-size: 14px; }
+.life-selfcheck .nav { position: fixed; left: 0; right: 0; padding: 0; height: var(--nav-h); }
+.life-selfcheck .nav-in { width: 100%; height: 100%; display: flex; align-items: center; }
+.life-selfcheck .sp { flex: 1; }
+.life-selfcheck .wrap { max-width: 940px; padding-top: 32px; margin-top: var(--nav-h); }
+.life-selfcheck h1 { font-size: 28px; letter-spacing: 0; }
+.life-selfcheck .lead { font-size: 16px; line-height: 1.8; }
+.life-selfcheck .seg button, .life-selfcheck .btn { min-height: 44px; }
+.life-selfcheck .seg { border-radius: 6px; }
+.life-selfcheck .q { gap: 16px; }
+.life-selfcheck .bar { flex-wrap: wrap; }
+@media (max-width: 1160px) {
+  .nav-in { gap: 12px; padding: 0 20px; }
+  .title.life-reader-title { display: none; }
+  .life-brand::after { display: none; }
+  .nav-r { gap: 12px; }
+}
+@media (max-width: 960px) {
+  .content { padding: calc(var(--nav-h) + 28px) 24px 56px; }
+  .sidebar { width: min(304px, 86vw); }
+}
+@media (max-width: 640px) {
+  :root { --nav-h: 120px; }
+  .nav-in { height: 120px; padding: 12px 16px; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-rows: 44px 44px; gap: 8px; }
+  .life-brand { gap: 8px; font-size: 16px; }
+  .life-brand img { width: 30px; height: 30px; }
+  .menu-btn { grid-column: 1; grid-row: 2; }
+  .life-brand { grid-column: 1 / 3; grid-row: 1; }
+  .search { display: block; grid-column: 2 / 4; grid-row: 2; width: 100%; max-width: none; margin: 0; }
+  .search input { height: 44px; }
+  .search kbd { display: none; }
+  .nav-r { grid-column: 3; grid-row: 1; gap: 8px; }
+  .nav-r .life-nav-action span { display: none; }
+  .nav-r .life-nav-action { min-width: 32px; justify-content: center; }
+  .nav-r > a.icon-btn { display: none; }
+  .life-theme { width: 36px; height: 36px; }
+  .content { padding: calc(var(--nav-h) + 24px) 16px 48px; }
+  .doc-head h1 { font-size: 24px; }
+  .doc-head { margin-bottom: 24px; }
+  .card { padding: 18px 16px; }
+  .sec-h h2 { font-size: 20px; }
+  .human { font-size: 16px; }
+  .life-selfcheck { --nav-h: 72px; }
+  .life-selfcheck .nav-in { height: 72px; display: flex; gap: 12px; padding: 0 16px; }
+  .life-selfcheck .sp { display: none; }
+  .life-selfcheck .life-brand span { display: none; }
+  .life-selfcheck .life-nav-action { font-size: 13px; margin-left: auto; }
+  .life-selfcheck .life-nav-action + .life-nav-action { margin-left: 0; }
+  .life-selfcheck .wrap { padding: 24px 16px 48px; }
+  .life-selfcheck h1 { font-size: 24px; }
+}

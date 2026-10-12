@@ -6,7 +6,7 @@
 <title>生活自查 · 高性价比人生指南</title>
 <meta name="description" content="回答一组是否题，看看书里哪些事你还没做到：哪一块漏得最多、先做哪几件、哪些一次办完就行。每条单独给出证据和出处，不汇总成「少活几年」。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233451b2'/%3E%3Cpath d='M17 33l10 11 20-24' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<script>(function(){try{var s=localStorage.getItem('theme');var d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})();</script>
+<script>(function(){try{var s=localStorage.getItem('vinda-life:theme');var d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})();</script>
 <style>
 /* 配色、字体与 index.html 同一套（VitePress 默认主题） */
 :root{
@@ -116,12 +116,21 @@ html.dark .btn{color:#1b1b1f}
   .hbar{grid-template-columns:7.5em 1fr 3.8em;gap:8px}
 }
 </style>
+<!-- vinda:release -->
+<link rel="stylesheet" href="vinda-life.css">
+<script src="vinda-icons.js"></script>
+<script src="vinda-life.js"></script>
 </head>
-<body>
+<body class="life-selfcheck">
 <header class="nav">
-  <a class="title" href="./">高性价比人生指南</a>
-  <span class="sp"></span>
-  <a class="back" href="./">回检索页</a>
+  <div class="nav-in">
+    <a class="life-brand" href="/" aria-label="返回 Vinda Magic 主站"><img src="vinda-brand.svg" alt="" width="36" height="36"><span>Vinda Magic</span></a>
+    <a class="title life-reader-title" href="./">高性价比人生指南</a>
+    <span class="sp"></span>
+    <a class="life-nav-action" href="./"><i data-lucide="book-open" aria-hidden="true"></i><span>回检索页</span></a>
+    <a class="life-nav-action" href="/"><i data-lucide="arrow-left" aria-hidden="true"></i><span>返回主站</span></a>
+    <button class="icon-btn life-theme" id="theme" type="button" aria-label="切换深色模式" title="切换深色模式"></button>
+  </div>
 </header>
 <main class="wrap">
   <div id="status">正在读取正文 …</div>
@@ -152,6 +161,8 @@ html.dark .btn{color:#1b1b1f}
       <button class="btn ghost" id="back" type="button">改答案</button>
     </div>
   </section>
+  <aside class="life-sponsor" id="life-sponsor" hidden aria-label="赞助"></aside>
+  <footer class="life-credit">原作：eternity4719《<a href="https://github.com/eternity4719/HowToLiveBetter" target="_blank" rel="noopener noreferrer">高性价比人生指南</a>》 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · <a href="LICENSE-CODE" data-life-code-license>代码许可</a><br>Vinda Magic 适配了界面与部署方式，正文保留原内容。</footer>
 </main>
 
 <script>
@@ -304,7 +315,7 @@ const find = (sec, key) => {
 };
 
 /* 答案：只存本机浏览器，取不到也照常能用 */
-const STORE = 'selfcheck-v1';
+const STORE = 'vinda-life:selfcheck:v1';
 let ans = {};
 try { ans = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (e) {}
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(ans)); } catch (e) {} };
@@ -431,18 +442,29 @@ document.getElementById('reset').addEventListener('click', () => { ans = {}; sav
   const status = document.getElementById('status');
   try {
     const EMBED = window.__CORPUS__;
-    const readme = EMBED ? EMBED.readme : await (await fetch('README.md', {cache:'no-cache'})).text();
+    const readme = EMBED ? EMBED.readme : await window.VindaLife.readText('README.md');
     const files = [...new Set(Array.from(readme.matchAll(/\]\((book\/[^)]+\.md)\)/g), m => m[1]))]
       .filter(f => GROUPS.some(g => g.qs.some(q => f.startsWith(`book/${String(q.sec).padStart(2,'0')}-`))));
-    const parts = await Promise.all(files.map(async f => EMBED ? EMBED.parts[f] : (await fetch(f, {cache:'no-cache'})).text()));
+    const needed = new Set(GROUPS.flatMap(g => g.qs.map(q => q.sec)));
+    if (files.length !== needed.size) throw new Error('自查所需章节未完整加载');
+    const parts = await Promise.all(files.map(async f => EMBED ? EMBED.parts[f] : window.VindaLife.readText(f)));
     ENTRIES = parse(parts.join('\n\n'));
-    for (const g of GROUPS) for (const q of g.qs) { q.g = g; q.entry = find(q.sec, q.key); }
+    for (const g of GROUPS) for (const q of g.qs) {
+      q.g = g; q.entry = find(q.sec, q.key);
+      if (!q.entry) throw new Error('自查与正文版本不一致，请重新加载');
+    }
     status.remove();
     renderAsk(); show('ask');
   } catch (err) {
     status.textContent = location.protocol === 'file:'
       ? '这个页面要通过 http 打开才能读取正文。'
       : `读取正文失败：${err.message}`;
+    if (location.protocol !== 'file:') {
+      const retry = document.createElement('button');
+      retry.type = 'button'; retry.className = 'btn'; retry.textContent = '重新加载';
+      retry.addEventListener('click', () => { status.textContent = '正在读取正文 …'; init(); });
+      status.appendChild(document.createElement('br')); status.appendChild(retry);
+    }
   }
 })();
 </script>
